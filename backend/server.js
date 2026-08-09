@@ -6,6 +6,7 @@ const axios = require("axios");
 const app = express();
 
 const PORT = process.env.PORT || 3001;
+const reviews = [];
 
 app.get("/", (req, res) => {
   res.send("CineClub API funcionando");
@@ -65,7 +66,36 @@ app.get("/api/movies/:id", async (req, res) => {
     });
   }
 });
+app.post("/api/movies/:tmdbId/reviews", express.json(), (req, res) => {
+  const { tmdbId } = req.params;
+  const { author, score, comment } = req.body;
 
+  if (!author || !score || !comment) {
+    return res.status(400).json({
+      error: "author, score y comment son obligatorios",
+    });
+  }
+
+  const numericScore = Number(score);
+
+  if (numericScore < 1 || numericScore > 5 || !Number.isInteger(numericScore)) {
+    return res.status(400).json({
+      error: "score debe ser un número entero entre 1 y 5",
+    });
+  }
+
+  const review = {
+    id: Date.now(),
+    tmdbId: Number(tmdbId),
+    author,
+    score: numericScore,
+    comment,
+  };
+
+  reviews.push(review);
+
+  res.status(201).json(review);
+});
 app.listen(PORT, () => {
   console.log(`Servidor funcionando en http://localhost:${PORT}`);
 });
