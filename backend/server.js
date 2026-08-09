@@ -96,6 +96,21 @@ app.post("/api/movies/:tmdbId/reviews", express.json(), (req, res) => {
 
   res.status(201).json(review);
 });
+app.delete("/api/reviews/:reviewId", (req, res) => {
+  const reviewId = Number(req.params.reviewId);
+
+  const index = reviews.findIndex((review) => review.id === reviewId);
+
+  if (index === -1) {
+    return res.status(404).json({
+      error: "Reseña no encontrada",
+    });
+  }
+
+  const deletedReview = reviews.splice(index, 1);
+
+  res.json(deletedReview[0]);
+});
 app.listen(PORT, () => {
   console.log(`Servidor funcionando en http://localhost:${PORT}`);
 });
