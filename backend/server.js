@@ -57,8 +57,28 @@ app.get("/api/movies/:id", async (req, res) => {
       }
     );
 
-    res.json(response.data);
+    const movieReviews = reviews.filter(
+      (review) => review.tmdbId === Number(id)
+    );
+
+    const avgScore =
+      movieReviews.length === 0
+        ? 0
+        : movieReviews.reduce((sum, review) => sum + review.score, 0) /
+          movieReviews.length;
+
+    res.json({
+      ...response.data,
+      reviews: movieReviews,
+      avgScore,
+    });
   } catch (error) {
+    if (error.response?.status === 404) {
+      return res.status(404).json({
+        error: "Película no encontrada",
+      });
+    }
+
     console.error("Error al consultar TMDB:", error.message);
 
     res.status(500).json({
@@ -66,6 +86,7 @@ app.get("/api/movies/:id", async (req, res) => {
     });
   }
 });
+
 app.post("/api/movies/:tmdbId/reviews", express.json(), (req, res) => {
   const { tmdbId } = req.params;
   const { author, score, comment } = req.body;
@@ -78,7 +99,11 @@ app.post("/api/movies/:tmdbId/reviews", express.json(), (req, res) => {
 
   const numericScore = Number(score);
 
-  if (numericScore < 1 || numericScore > 5 || !Number.isInteger(numericScore)) {
+  if (
+    numericScore < 1 ||
+    numericScore > 5 ||
+    !Number.isInteger(numericScore)
+  ) {
     return res.status(400).json({
       error: "score debe ser un número entero entre 1 y 5",
     });
@@ -96,6 +121,7 @@ app.post("/api/movies/:tmdbId/reviews", express.json(), (req, res) => {
 
   res.status(201).json(review);
 });
+
 app.delete("/api/reviews/:reviewId", (req, res) => {
   const reviewId = Number(req.params.reviewId);
 
@@ -111,6 +137,7 @@ app.delete("/api/reviews/:reviewId", (req, res) => {
 
   res.json(deletedReview[0]);
 });
+
 app.listen(PORT, () => {
   console.log(`Servidor funcionando en http://localhost:${PORT}`);
 });
