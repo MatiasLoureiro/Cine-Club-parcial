@@ -2,16 +2,17 @@ require("dotenv").config();
 
 const express = require("express");
 const axios = require("axios");
+const path = require("path");
 
 const app = express();
 
 const PORT = process.env.PORT || 3001;
 const reviews = [];
 
-app.get("/", (req, res) => {
-  res.send("CineClub API funcionando");
-});
+// Servir el frontend
+app.use(express.static(path.join(__dirname, "../frontend")));
 
+// Buscar películas
 app.get("/api/movies/search", async (req, res) => {
   const { q } = req.query;
 
@@ -43,6 +44,7 @@ app.get("/api/movies/search", async (req, res) => {
   }
 });
 
+// Obtener detalle de una película
 app.get("/api/movies/:id", async (req, res) => {
   const { id } = req.params;
 
@@ -87,6 +89,7 @@ app.get("/api/movies/:id", async (req, res) => {
   }
 });
 
+// Crear una reseña
 app.post("/api/movies/:tmdbId/reviews", express.json(), (req, res) => {
   const { tmdbId } = req.params;
   const { author, score, comment } = req.body;
@@ -122,10 +125,13 @@ app.post("/api/movies/:tmdbId/reviews", express.json(), (req, res) => {
   res.status(201).json(review);
 });
 
+// Eliminar una reseña
 app.delete("/api/reviews/:reviewId", (req, res) => {
   const reviewId = Number(req.params.reviewId);
 
-  const index = reviews.findIndex((review) => review.id === reviewId);
+  const index = reviews.findIndex(
+    (review) => review.id === reviewId
+  );
 
   if (index === -1) {
     return res.status(404).json({
@@ -138,6 +144,7 @@ app.delete("/api/reviews/:reviewId", (req, res) => {
   res.json(deletedReview[0]);
 });
 
+// Iniciar servidor
 app.listen(PORT, () => {
   console.log(`Servidor funcionando en http://localhost:${PORT}`);
 });

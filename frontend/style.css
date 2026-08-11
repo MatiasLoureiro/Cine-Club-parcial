@@ -95,3 +95,37 @@ body {
   margin-top: 50px;
   color: #666;
 }
+.movie-card {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.movie-card img,
+.no-poster {
+  width: 100%;
+  height: 270px;
+  object-fit: cover;
+}
+
+.no-poster {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ddd;
+  color: #666;
+}
+
+.movie-info {
+  padding: 15px;
+}
+
+.movie-info h3 {
+  margin-bottom: 8px;
+  font-size: 18px;
+}
+
+.movie-info p {
+  color: #666;
+}
