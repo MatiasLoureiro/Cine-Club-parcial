@@ -69,6 +69,14 @@ function displayMovies(movies) {
         ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
         : "";
 
+      const releaseYear = movie.release_date
+        ? movie.release_date.substring(0, 4)
+        : "Año desconocido";
+
+      const overview = movie.overview
+        ? movie.overview
+        : "No hay descripción disponible.";
+
       return `
         <article class="movie-card">
           ${
@@ -79,12 +87,50 @@ function displayMovies(movies) {
 
           <div class="movie-info">
             <h3>${movie.title}</h3>
-            <p>
-              ${movie.release_date || "Fecha desconocida"}
+
+            <p class="movie-year">
+              ${releaseYear}
             </p>
+
+            <p class="movie-rating">
+              ⭐ ${movie.vote_average.toFixed(1)}
+            </p>
+
+            <p class="movie-overview">
+              ${overview}
+            </p>
+
+            <button
+              class="details-button"
+              onclick="showMovieDetails(${movie.id})"
+            >
+              Ver detalle
+            </button>
           </div>
         </article>
       `;
     })
     .join("");
+}
+
+async function showMovieDetails(movieId) {
+  try {
+    const response = await fetch(`${API_URL}/api/movies/${movieId}`);
+
+    const movie = await response.json();
+
+    if (!response.ok) {
+      throw new Error(movie.error || "No se pudo obtener la película");
+    }
+
+    alert(
+      `${movie.title}\n\n` +
+      `Puntuación TMDB: ${movie.vote_average.toFixed(1)}\n` +
+      `Reseñas CineClub: ${movie.reviews.length}\n` +
+      `Promedio CineClub: ${movie.avgScore.toFixed(1)}`
+    );
+  } catch (error) {
+    console.error("Error:", error);
+    alert("No se pudo obtener el detalle de la película.");
+  }
 }

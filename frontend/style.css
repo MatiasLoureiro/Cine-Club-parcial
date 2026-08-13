@@ -129,3 +129,32 @@ body {
 .movie-info p {
   color: #666;
 }
+.movie-year {
+  margin-bottom: 6px;
+  color: #666;
+}
+
+.movie-rating {
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.movie-overview {
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 15px;
+}
+
+.details-button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  background: #222;
+  color: white;
+  cursor: pointer;
+}
+
+.details-button:hover {
+  opacity: 0.85;
+}
