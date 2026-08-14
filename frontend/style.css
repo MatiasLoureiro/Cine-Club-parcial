@@ -158,3 +158,70 @@ body {
 .details-button:hover {
   opacity: 0.85;
 }
+.movie-detail {
+  margin-top: 20px;
+}
+
+.back-button {
+  margin-bottom: 20px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.movie-detail-content {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.movie-detail-poster img {
+  width: 100%;
+  border-radius: 10px;
+  display: block;
+}
+
+.movie-detail-info h2 {
+  margin-top: 0;
+  font-size: 32px;
+}
+
+.movie-detail-overview {
+  line-height: 1.6;
+}
+
+.reviews-section {
+  margin-top: 30px;
+}
+
+.reviews-list {
+  display: grid;
+  gap: 15px;
+}
+
+.review-card {
+  padding: 15px;
+  border-radius: 8px;
+  background: #f2f2f2;
+}
+
+.review-card h4 {
+  margin-top: 0;
+  margin-bottom: 5px;
+}
+
+.review-card p {
+  margin: 6px 0;
+}
+
+@media (max-width: 700px) {
+  .movie-detail-content {
+    grid-template-columns: 1fr;
+  }
+
+  .movie-detail-poster {
+    max-width: 280px;
+  }
+}
