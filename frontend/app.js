@@ -172,11 +172,13 @@ function displayMovieDetails(movie) {
 
   moviesContainer.innerHTML = `
     <section class="movie-detail">
+
       <button class="back-button" onclick="searchMovies()">
         ← Volver a resultados
       </button>
 
       <div class="movie-detail-content">
+
         <div class="movie-detail-poster">
           ${
             poster
@@ -186,11 +188,18 @@ function displayMovieDetails(movie) {
         </div>
 
         <div class="movie-detail-info">
+
           <h2>${movie.title}</h2>
 
-          <p><strong>Fecha de estreno:</strong> ${releaseDate}</p>
+          <p>
+            <strong>Fecha de estreno:</strong>
+            ${releaseDate}
+          </p>
 
-          <p><strong>Géneros:</strong> ${genres}</p>
+          <p>
+            <strong>Géneros:</strong>
+            ${genres}
+          </p>
 
           <p>
             <strong>Puntuación TMDB:</strong>
@@ -204,7 +213,11 @@ function displayMovieDetails(movie) {
 
           <p>
             <strong>Duración:</strong>
-            ${movie.runtime ? `${movie.runtime} minutos` : "No disponible"}
+            ${
+              movie.runtime
+                ? `${movie.runtime} minutos`
+                : "No disponible"
+            }
           </p>
 
           <h3>Sinopsis</h3>
@@ -212,16 +225,125 @@ function displayMovieDetails(movie) {
           <p class="movie-detail-overview">
             ${movie.overview || "No hay descripción disponible."}
           </p>
+
         </div>
       </div>
 
       <section class="reviews-section">
+
         <h3>Reseñas de CineClub</h3>
 
         <div class="reviews-list">
           ${reviewsHTML}
         </div>
+
+        <div class="review-form">
+
+          <h3>Dejá tu reseña</h3>
+
+          <form id="reviewForm">
+
+            <label for="reviewAuthor">
+              Nombre
+            </label>
+
+            <input
+              id="reviewAuthor"
+              type="text"
+              placeholder="Tu nombre"
+              required
+            >
+
+            <label for="reviewScore">
+              Puntuación
+            </label>
+
+            <select id="reviewScore" required>
+              <option value="">Seleccioná una puntuación</option>
+              <option value="1">⭐ 1</option>
+              <option value="2">⭐ 2</option>
+              <option value="3">⭐ 3</option>
+              <option value="4">⭐ 4</option>
+              <option value="5">⭐ 5</option>
+            </select>
+
+            <label for="reviewComment">
+              Comentario
+            </label>
+
+            <textarea
+              id="reviewComment"
+              rows="4"
+              placeholder="Escribí tu opinión..."
+              required
+            ></textarea>
+
+            <button type="submit">
+              Publicar reseña
+            </button>
+
+          </form>
+
+          <p id="reviewMessage"></p>
+
+        </div>
+
       </section>
+
     </section>
   `;
+
+  const reviewForm = document.getElementById("reviewForm");
+
+  reviewForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    submitReview(movie.id);
+  });
+}
+
+async function submitReview(movieId) {
+  const author = document.getElementById("reviewAuthor").value.trim();
+  const score = Number(document.getElementById("reviewScore").value);
+  const comment = document.getElementById("reviewComment").value.trim();
+  const message = document.getElementById("reviewMessage");
+
+  if (!author || !score || !comment) {
+    message.textContent = "Completá todos los campos.";
+    return;
+  }
+
+  message.textContent = "Publicando reseña...";
+
+  try {
+    const response = await fetch(
+      `${API_URL}/api/movies/${movieId}/reviews`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          author,
+          score,
+          comment,
+        }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "No se pudo publicar la reseña");
+    }
+
+    message.textContent = "¡Reseña publicada correctamente!";
+
+    await showMovieDetails(movieId);
+  } catch (error) {
+    console.error("Error:", error);
+
+    message.textContent =
+      "No se pudo publicar la reseña.";
+  }
 }
