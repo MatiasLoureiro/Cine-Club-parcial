@@ -268,3 +268,24 @@ body {
   margin-bottom: 0;
   font-weight: bold;
 }
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 15px;
+}
+
+.review-header h4 {
+  margin-bottom: 5px;
+}
+
+.review-header p {
+  margin-top: 0;
+}
+
+.delete-review-button {
+  padding: 7px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}

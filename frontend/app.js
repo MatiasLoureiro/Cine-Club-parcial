@@ -161,8 +161,20 @@ function displayMovieDetails(movie) {
           .map(
             (review) => `
               <article class="review-card">
-                <h4>${review.author}</h4>
-                <p>⭐ ${review.score}/5</p>
+                <div class="review-header">
+                  <div>
+                    <h4>${review.author}</h4>
+                    <p>⭐ ${review.score}/5</p>
+                  </div>
+
+                  <button
+                    class="delete-review-button"
+                    onclick="deleteReview(${review.id}, ${movie.id})"
+                  >
+                    Eliminar
+                  </button>
+                </div>
+
                 <p>${review.comment}</p>
               </article>
             `
@@ -343,7 +355,39 @@ async function submitReview(movieId) {
   } catch (error) {
     console.error("Error:", error);
 
-    message.textContent =
-      "No se pudo publicar la reseña.";
+    message.textContent = "No se pudo publicar la reseña.";
+  }
+}
+
+async function deleteReview(reviewId, movieId) {
+  const confirmDelete = confirm(
+    "¿Seguro que querés eliminar esta reseña?"
+  );
+
+  if (!confirmDelete) {
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      `${API_URL}/api/reviews/${reviewId}`,
+      {
+        method: "DELETE",
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.error || "No se pudo eliminar la reseña"
+      );
+    }
+
+    await showMovieDetails(movieId);
+  } catch (error) {
+    console.error("Error:", error);
+
+    alert("No se pudo eliminar la reseña.");
   }
 }
