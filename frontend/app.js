@@ -13,6 +13,7 @@ searchInput.addEventListener("keydown", (event) => {
 });
 
 async function searchMovies() {
+  moviesContainer.classList.remove("detail-view");
   const query = searchInput.value.trim();
 
   if (!query) {
@@ -54,6 +55,8 @@ async function searchMovies() {
 }
 
 function displayMovies(movies) {
+  moviesContainer.classList.remove("detail-view");
+
   if (!movies || movies.length === 0) {
     moviesContainer.innerHTML = `
       <p class="empty-message">
@@ -114,6 +117,7 @@ function displayMovies(movies) {
 }
 
 async function showMovieDetails(movieId) {
+  moviesContainer.classList.add("detail-view");
   moviesContainer.innerHTML = `
     <p class="empty-message">
       Cargando detalle...
