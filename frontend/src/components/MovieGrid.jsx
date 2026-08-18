@@ -3,7 +3,10 @@ import MovieCard from "./MovieCard";
 function MovieGrid({ movies, onSelectMovie }) {
   return (
     <section className="movies-section">
-      <h2>Películas encontradas</h2>
+      <div className="movies-section-header">
+        <h2>Películas encontradas</h2>
+        <span>{movies.length} resultados</span>
+      </div>
 
       <div className="movies-grid">
         {movies.map((movie) => (

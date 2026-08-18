@@ -7,6 +7,8 @@ function MovieCard({ movie, onSelect }) {
     ? movie.release_date.substring(0, 4)
     : "Año desconocido";
 
+  const tmdbScore = Number(movie.vote_average || 0).toFixed(1);
+
   return (
     <article className="movie-card">
       {poster ? (
@@ -28,7 +30,8 @@ function MovieCard({ movie, onSelect }) {
         </p>
 
         <p className="movie-rating">
-          ⭐ {Number(movie.avgScore || 0).toFixed(1)}
+          ⭐ {tmdbScore}
+          <span>Puntuación TMDB</span>
         </p>
 
         <button
