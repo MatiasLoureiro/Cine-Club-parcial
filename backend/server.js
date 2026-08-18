@@ -2,17 +2,35 @@ require("dotenv").config();
 
 const express = require("express");
 const axios = require("axios");
-const path = require("path");
+const cors = require("cors");
 
 const app = express();
+
+app.use(cors());
 
 const PORT = process.env.PORT || 3001;
 const reviews = [];
 
-// Servir el frontend
-app.use(express.static(path.join(__dirname, "../frontend")));
+app.use((req, res, next) => {
+  const start = Date.now();
 
-// Buscar películas
+  res.on("finish", () => {
+    const duration = Date.now() - start;
+
+    console.log(
+      `${req.method} ${req.originalUrl} - ${res.statusCode} - ${duration}ms`
+    );
+  });
+
+  next();
+});
+
+app.use(express.json());
+
+app.get("/", (req, res) => {
+  res.send("CineClub API funcionando");
+});
+
 app.get("/api/movies/search", async (req, res) => {
   const { q } = req.query;
 
@@ -34,7 +52,29 @@ app.get("/api/movies/search", async (req, res) => {
       }
     );
 
-    res.json(response.data);
+    const movies = response.data.results.map((movie) => {
+      const movieReviews = reviews.filter(
+        (review) => review.tmdbId === movie.id
+      );
+
+      const avgScore =
+        movieReviews.length === 0
+          ? 0
+          : movieReviews.reduce(
+              (sum, review) => sum + review.score,
+              0
+            ) / movieReviews.length;
+
+      return {
+        ...movie,
+        avgScore,
+      };
+    });
+
+    res.json({
+      ...response.data,
+      results: movies,
+    });
   } catch (error) {
     console.error("Error al consultar TMDB:", error.message);
 
@@ -44,7 +84,6 @@ app.get("/api/movies/search", async (req, res) => {
   }
 });
 
-// Obtener detalle de una película
 app.get("/api/movies/:id", async (req, res) => {
   const { id } = req.params;
 
@@ -66,8 +105,10 @@ app.get("/api/movies/:id", async (req, res) => {
     const avgScore =
       movieReviews.length === 0
         ? 0
-        : movieReviews.reduce((sum, review) => sum + review.score, 0) /
-          movieReviews.length;
+        : movieReviews.reduce(
+            (sum, review) => sum + review.score,
+            0
+          ) / movieReviews.length;
 
     res.json({
       ...response.data,
@@ -89,8 +130,7 @@ app.get("/api/movies/:id", async (req, res) => {
   }
 });
 
-// Crear una reseña
-app.post("/api/movies/:tmdbId/reviews", express.json(), (req, res) => {
+app.post("/api/movies/:tmdbId/reviews", (req, res) => {
   const { tmdbId } = req.params;
   const { author, score, comment } = req.body;
 
@@ -125,7 +165,6 @@ app.post("/api/movies/:tmdbId/reviews", express.json(), (req, res) => {
   res.status(201).json(review);
 });
 
-// Eliminar una reseña
 app.delete("/api/reviews/:reviewId", (req, res) => {
   const reviewId = Number(req.params.reviewId);
 
@@ -144,7 +183,6 @@ app.delete("/api/reviews/:reviewId", (req, res) => {
   res.json(deletedReview[0]);
 });
 
-// Iniciar servidor
 app.listen(PORT, () => {
   console.log(`Servidor funcionando en http://localhost:${PORT}`);
 });

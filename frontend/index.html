@@ -1,50 +1,14 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CineClub</title>
-  <link rel="stylesheet" href="style.css">
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CineClub</title>
+  </head>
 
-<body>
-  <header class="header">
-    <h1>CineClub</h1>
-    <p>Buscá películas y compartí tus reseñas</p>
-  </header>
+  <body>
+    <div id="root"></div>
 
-  <main class="container">
-    <section class="search-section">
-      <h2>Buscar películas</h2>
-
-      <div class="search-box">
-        <input
-          id="searchInput"
-          type="text"
-          placeholder="Escribí el nombre de una película..."
-        >
-
-        <button id="searchButton">
-          Buscar
-        </button>
-      </div>
-    </section>
-
-    <section id="moviesSection" class="movies-section">
-      <h2>Películas</h2>
-
-      <div id="moviesContainer" class="movies-container">
-        <p class="empty-message">
-          Todavía no hay películas para mostrar.
-        </p>
-      </div>
-    </section>
-  </main>
-
-  <footer class="footer">
-    <p>CineClub © 2026</p>
-  </footer>
-
-  <script src="app.js"></script>
-</body>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>
