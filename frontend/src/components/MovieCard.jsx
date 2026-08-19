@@ -8,6 +8,7 @@ function MovieCard({ movie, onSelect }) {
     : "Año desconocido";
 
   const tmdbScore = Number(movie.vote_average || 0).toFixed(1);
+  const cineClubScore = Number(movie.avgScore || 0).toFixed(1);
 
   return (
     <article className="movie-card">
@@ -32,6 +33,11 @@ function MovieCard({ movie, onSelect }) {
         <p className="movie-rating">
           ⭐ {tmdbScore}
           <span>Puntuación TMDB</span>
+        </p>
+
+        <p className="movie-rating">
+          ⭐ {cineClubScore}
+          <span>Promedio CineClub</span>
         </p>
 
         <button
